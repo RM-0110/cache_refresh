@@ -1,10 +1,36 @@
 import requests
 import time
 from datetime import datetime
+import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 def send_email(subject, body):
-    # Replace this function with your actual email-sending implementation.
-    print(f"Subject: {subject}\nBody:\n{body}")
+    # Set up email credentials and server
+    sender_email = "riddhimann@navyatech.in"  # Your email address
+    receiver_email = "riddhimann@navyatech.in"  # Receiver email address (can be the same as sender)
+    password = os.getenv('APP_PASSWORD')  # Get password from environment variables
+
+    # Set up the MIME structure for the email
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        # Establish connection to Gmail SMTP server and send the email
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()  # Secure the connection
+        server.login(sender_email, password)  # Log in using the email credentials
+        text = msg.as_string()
+        server.sendmail(sender_email, receiver_email, text)  # Send email
+        server.quit()  # Close the connection
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email. Error: {e}")
 
 def trigger_cache_update():
     url = 'https://alpha.bestopinions.us/cbsearch/api/cacheupdate/'
@@ -46,7 +72,6 @@ def main():
     try:
         cache_update_response = trigger_cache_update()
     except Exception as e:
-        # Log the error and exit the script without sending an email
         print(f"Error occurred while triggering cache update: {e}")
         return
 
@@ -64,7 +89,6 @@ def main():
             if status_response.get("status") != "SUCCESS":
                 failed_tasks.append(task_id)
         except Exception as e:
-            # Log the error and consider the task as failed
             print(f"Error checking status for task_id {task_id}: {e}")
             failed_tasks.append(task_id)
 
