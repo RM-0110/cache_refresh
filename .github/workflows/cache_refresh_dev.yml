@@ -29,3 +29,5 @@ jobs:
     - name: Run Cache Refresh Script
       run: |
         python cache_refresh_dev.py
+      env:
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
