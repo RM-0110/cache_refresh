@@ -9,13 +9,13 @@ from email.mime.multipart import MIMEMultipart
 def send_email(subject, body):
     # Set up email credentials and server
     sender_email = "riddhimann@navyatech.in"  # Your email address
-    receiver_email = "riddhimann@navyatech.in"  # Receiver email address (can be the same as sender)
+    receiver_emails = ["riddhimann@navyatech.in", "kirana@navyatech.in", "pushpa@navyatech.in", "armugam@navyatech.in"]  # Receiver email address (can be the same as sender)
     password = os.getenv('APP_PASSWORD')  # Get password from environment variables
 
     # Set up the MIME structure for the email
     msg = MIMEMultipart()
     msg['From'] = sender_email
-    msg['To'] = receiver_email
+    msg["To"] = ", ".join(receiver_emails)
     msg['Subject'] = subject
 
     msg.attach(MIMEText(body, 'plain'))
