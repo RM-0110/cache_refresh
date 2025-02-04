@@ -6,10 +6,13 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+username = "riddhimann"
+password = "Navya@12"
+
 def send_email(subject, body):
     # Set up email credentials and server
     sender_email = "riddhimann@navyatech.in"  # Your email address
-    receiver_emails = ["riddhimann@navyatech.in", "kirana@navyatech.in", "pushpa@navyatech.in", "armugam@navyatech.in"]  # Receiver email address (can be the same as sender)
+    receiver_emails = ["riddhimann@navyatech.in", "kirana@navyatech.in"]  # Receiver email address (can be the same as sender)
     password = os.getenv('APP_PASSWORD')  # Get password from environment variables
 
     # Set up the MIME structure for the email
@@ -32,6 +35,20 @@ def send_email(subject, body):
     except Exception as e:
         print(f"Failed to send email. Error: {e}")
 
+def token(username, password):
+    API = "https://alpha.bestopinions.us/alphaBackend/accounts/auth/token/"
+    headers = {
+    "Content-Type": "application/json"
+    }
+    body = {"client_id":"bKN4Vycdhnhz8ytVwi3nbxh18MrOloSMTD8Z78Bp","username":username,"password":password,"grant_type":"password","endUris":"AUTHENTICATE_USER_CREDS"}
+    response = requests.post(API, json = body, headers= headers)
+    output = response.json()
+    cbs_token = output['cbs_access_token']
+    print(cbs_token)
+    return cbs_token
+
+cbs_token = token(username, password)
+
 def trigger_cache_update():
     url = 'https://alpha.bestopinions.us/cbsearch/api/cacheupdate/'
     headers = {
@@ -42,7 +59,8 @@ def trigger_cache_update():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
         'Accept': 'application/json, text/plain, /',
         'Content-Type': 'application/json',
-        'x-session-id': 'undefined'
+        'x-session-id': 'undefined',
+        'Cookie': f'auth_cbs_token={cbs_token}'
     }
     payload = {"cachename": "all"}
     response = requests.post(url, headers=headers, json=payload)
@@ -59,7 +77,8 @@ def check_status(task_id):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
         'Accept': 'application/json, text/plain, /',
         'Content-Type': 'application/json',
-        'x-session-id': 'undefined'
+        'x-session-id': 'undefined',
+        'Cookie': f'auth_cbs_token={cbs_token}'
     }
     payload = {"task_id": task_id}
     response = requests.post(url, headers=headers, json=payload)
