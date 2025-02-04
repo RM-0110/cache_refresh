@@ -31,3 +31,5 @@ jobs:
         python cache_refresh_dev.py
       env:
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          VYAS_PASSWORD: ${{ secrets.VYAS_PASSWORD }}
+          VYAS_PASSWORD_PREPROD: ${{ secrets.VYAS_PASSWORD_PREPROD }}
