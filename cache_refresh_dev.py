@@ -1,6 +1,7 @@
 import requests
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
+import pytz
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -12,7 +13,7 @@ password = os.getenv('VYAS_PASSWORD')
 def send_email(subject, body):
     print("Preparing to send email...")
     sender_email = "riddhimann@navyatech.in"
-    receiver_emails = ["riddhimann@navyatech.in", "kirana@navyatech.in"]
+    receiver_emails = ["riddhimann@navyatech.in", "kirana@navyatech.in", "pushpa@navyatech.in", "armugam@navyatech.in"]
     password = os.getenv('APP_PASSWORD')
     
     msg = MIMEMultipart()
@@ -89,7 +90,8 @@ def check_status(task_id):
     return response.json()
 
 def main():
-    t1 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    ist = pytz.timezone('Asia/Kolkata')
+    t1 = datetime.now(pytz.utc).astimezone(ist).strftime('%Y-%m-%d %H:%M:%S')
     print(f"Script started at {t1}")
     
     try:
@@ -102,7 +104,7 @@ def main():
     print(f"Task IDs received: {task_id_list}")
     
     print("Waiting for 30 seconds before checking task status...")
-    time.sleep(30)
+    time.sleep(150)
     
     failed_tasks = []
     for task_id in task_id_list:
