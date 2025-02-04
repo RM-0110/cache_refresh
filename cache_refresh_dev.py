@@ -104,7 +104,8 @@ def main():
     print(f"Task IDs received: {task_id_list}")
     
     print("Waiting for 30 seconds before checking task status...")
-    time.sleep(150)
+    buffer_time = 200
+    time.sleep(buffer_time)
     
     failed_tasks = []
     for task_id in task_id_list:
@@ -117,14 +118,14 @@ def main():
             failed_tasks.append(task_id)
     
     if not failed_tasks:
-        subject = "CBsearch Cache Update Task Completed Successfully"
+        subject = f"CBsearch Cache Update Task Completed Successfully - {t1}"
         body = f"CBsearch cache update task initiated at {t1}\nAll tasks have passed."
         print("All tasks completed successfully.")
     else:
-        subject = "CBsearch Cache Update Task Failed"
+        subject = f"CBsearch Cache Update Task Failed/Incomplete - {t1}"
         failed_tasks_str = ", ".join(failed_tasks)
-        body = f"CBsearch cache update task initiated at {t1}\nFailed tasks: {failed_tasks_str}"
-        print(f"Failed tasks: {failed_tasks_str}")
+        body = f"CBsearch cache update task initiated at {t1}. Buffer time is set to {buffer_time} seconds.\nFailed or incomplete tasks: {failed_tasks_str}"
+        print(f"Failed/incomplete tasks: {failed_tasks_str}")
     
     send_email(subject, body)
     print("Script execution completed.")
