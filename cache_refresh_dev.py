@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 username = "riddhimann"
-password = "Navya@12"
+password = os.getenv('VYAS_PASSWORD')
 
 def send_email(subject, body):
     # Set up email credentials and server
@@ -86,21 +86,17 @@ def check_status(task_id):
     return response.json()
 
 def main():
-    # Step 1: Trigger the cache update
-    t1 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Get the local time in IST
+    t1 = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  
     try:
         cache_update_response = trigger_cache_update()
     except Exception as e:
         print(f"Error occurred while triggering cache update: {e}")
         return
 
-    # Step 2: Extract task_id values
     task_id_list = [item['task_id'] for item in cache_update_response]
 
-    # Step 3: Wait for 1 minute
     time.sleep(30)
 
-    # Step 4: Check the status of each task_id
     failed_tasks = []
     for task_id in task_id_list:
         try:
