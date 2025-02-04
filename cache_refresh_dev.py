@@ -98,7 +98,7 @@ def main():
     task_id_list = [item['task_id'] for item in cache_update_response]
 
     # Step 3: Wait for 1 minute
-    time.sleep(60)
+    time.sleep(30)
 
     # Step 4: Check the status of each task_id
     failed_tasks = []
